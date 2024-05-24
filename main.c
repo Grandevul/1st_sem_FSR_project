@@ -126,9 +126,10 @@ int main() {
 
 	char *filename_input = "images/hand.png";
 	unsigned char *picture = load_png_file(filename_input, &w, &h);
-	//unsigned char *picture2 = load_png_file(filename_input, &w, &h);
+	unsigned char *picture2 = load_png_file(filename_input, &w, &h);
+	unsigned char *picture3 = load_png_file(filename_input, &w, &h);
 
-	char *filename_output = "images/hand_out7.png";
+	char *filename_output = "images/hand_out8.png";
 
 	if (picture == NULL) {
 		printf("I can't read the picture %s. Error.\n", filename_input);
@@ -194,51 +195,120 @@ int main() {
         f(4, h, w, n, 10, parent, rank, picture, get_delta_rgb); ///_________________________________1.5
         for (int k = 0; k < h * w; k += 1)
         {
+            int x = 0;
             for (int i = 0; i < 3; i++)
             {
-                picture[4*k+i] = picture[4*parent[k]+i];
+                x += picture[4*parent[k]+i];
+            }
+            x /= 3;
+            for (int i = 0; i < 3; i++)
+            {
+                picture[4*k+i] = x;
             }
         }
-//        for (int k = 0; k < h * w; k += 1)
-//        {
-//            for (int i = 0; i < 3; i++)
-//            {
-//                picture[4*k+i] = picture[4*parent[k]+i];
-//            }
-//        }
+        int ih = 0;
+        int jw = 0;
+        int x2 = 3;
+        for (int k = 0; k < h * w; k += 1)
+        {
+            for (int i = ih-x2; i < ih+x2; i++)
+            {
+                for (int j = jw-x2; j < jw+x2; j++)
+                {
+                    if (i < 0 || i >= h || j < 0 || j >= w) continue;
+                    if (picture[4*k] > 250)
+                    {
+                        for (int ii = 0; ii < 3; ii++)
+                            picture3[(i*w+j)*4+ii] = picture[k*4+ii];
+                    }
+                    else
+                    {
+                        for (int ii = 0; ii < 3; ii++)
+                            picture3[(i*w+j)*4+ii] = picture[(i*w+j)*4+ii];
+                    }
+                }
+            }
+
+            jw++;
+            if (jw == w)
+            {
+                jw = 0;
+                ih++;
+            }
+        }
+        for (int k = 0; k < h * w; k += 1)
+        {
+            if (picture3[4*k] > 200)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    picture2[4*k+i] = picture3[4*k];
+                }
+            }
+        }
+
+        //applySobelFilter(picture2, w, h);
 ///--------
 //        for (int i = 0; i < n; i++)
 //        {
 //            make_set(i, parent, rank);
 //            count[i] = 0;
 //        }
-//        f(4, h, w, n, x, parent, rank, picture, get_delta_rgb); ///_________________________________2
+//        f(3, h, w, n, x, parent, rank, picture2, get_delta_rgb); ///_________________________________2
 //        for (int k = 0; k < h * w; k += 1)
 //        {
 //            if (parent[k] == k)
 //            {
 //                for (int i = 0; i < 3; i++)
 //                {
-//                    picture[4*k+i] = rand()%256;
+//                    picture2[4*k+i] = rand()%256;
 //                }
 //            }
 //            else
 //            {
 //                for (int i = 0; i < 3; i++)
 //                {
-//                    picture[4*k+i] = picture[4*parent[k]+i];
+//                    picture2[4*k+i] = picture2[4*parent[k]+i];
+//                }
+//            }
+//        }
+////--------------------------------------------------------------------
+//        for (int k = 0; k < h * w; k += 1)
+//        {
+//            count[parent[k]]++;
+//        }
+//        for (int k = 0; k < h * w; k += 1)
+//        {
+////            if (count[parent[k]] > 10)
+////                printf("%d\n", count[parent[k]]);
+//            if (count[parent[k]] > 100000)
+//            {
+//                for (int i = 0; i < 3; i++)
+//                {
+//                    picture2[4*k+i] = 0;
+//                }
+//            }
+//            if (count[parent[k]] < 10)
+//            {
+//                for (int i = 0; i < 3; i++)
+//                {
+//                    picture2[4*k+i] = 0;
 //                }
 //            }
 //        }
 
-        //applySobelFilter(picture, w, h);
+//
+//        applySobelFilter(picture, w, h);
 
         free(parent);
         free(rank);
+        free(count);
     }
 
-	save_png_file(filename_output, picture, w, h);
+	save_png_file(filename_output, picture2, w, h);
 	free(picture);
+	free(picture2);
+	free(picture3);
 
 	return 0;
 }
