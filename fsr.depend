@@ -1,0 +1,36 @@
+# depslib dependency file v1.0
+1711059256 source:d:\informatica\fsr_prak\1st_sem_fsr_project\lodepng.c
+	"lodepng.h"
+	<limits.h>
+	<stdio.h>
+	<stdlib.h>
+
+1711059257 d:\informatica\fsr_prak\1st_sem_fsr_project\lodepng.h
+	<string.h>
+	<vector>
+	<string>
+	"lodepng.h"
+	<iostream>
+	"lodepng.h"
+
+1716479011 source:d:\informatica\fsr_prak\1st_sem_fsr_project\image.c
+	"lodepng.h"
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+
+1716585048 source:d:\informatica\fsr_prak\1st_sem_fsr_project\main.c
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+	"lodepng.h"
+	"image.h"
+
+1716477931 d:\informatica\fsr_prak\1st_sem_fsr_project\image.c
+	"lodepng.h"
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+
+1716479023 d:\informatica\fsr_prak\1st_sem_fsr_project\image.h
+
