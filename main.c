@@ -129,7 +129,7 @@ int main() {
 	unsigned char *picture2 = load_png_file(filename_input, &w, &h);
 	unsigned char *picture3 = load_png_file(filename_input, &w, &h);
 
-	char *filename_output = "images/skull_out9.png";
+	char *filename_output = "images/skull_out10.png";
 
 	if (picture == NULL) {
 		printf("I can't read the picture %s. Error.\n", filename_input);
@@ -209,7 +209,7 @@ int main() {
         }
         int ih = 0;
         int jw = 0;
-        int x2 = 3;
+        int x2 = 1;
         for (int k = 0; k < h * w; k += 1)
         {
             if (picture[4*k] > 200)
@@ -246,7 +246,7 @@ int main() {
                     {
                         if (i < 0 || i >= h || j < 0 || j >= w) continue;
                         for (int ii = 0; ii < 3; ii++)
-                            picture2[4*(i*w+j)+ii] = 0;
+                            picture2[4*(i*w+j)+ii] = '0';
                     }
                 }
             }
@@ -266,7 +266,7 @@ int main() {
 //            make_set(i, parent, rank);
 //            count[i] = 0;
 //        }
-//        f(2, h, w, n, 10, parent, rank, picture2, get_delta_bw); ///_________________________________2
+//        f(2, h, w, n, 4, parent, rank, picture2, get_delta_bw); ///_________________________________2
 //        for (int k = 0; k < h * w; k += 1)
 //        {
 //            if (parent[k] == k)
