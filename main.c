@@ -97,7 +97,7 @@ void f(double max_delta, int h, int w, int n, int x, int* parent, int* rank, uns
 {
     int ih = 0;
     int jw = 0;
-    printf("maxdelta=%lf\n", max_delta);
+    printf("\nmaxdelta=%lf\n", max_delta);
     printf("%d %d\n", 0, w*h*4);
     for (int k = 0; k < h * w * 4; k += 4)
     {
@@ -124,6 +124,18 @@ void f(double max_delta, int h, int w, int n, int x, int* parent, int* rank, uns
     for (int k = 0; k < h * w; k += 1)
     {
         parent[k] = find_set(k, parent, rank);
+    }
+}
+
+void f2(double max_delta, int h, int w, int n, int x, int* prev, unsigned char *picture,
+        double (*get_delta)(int, int, unsigned char*))
+{
+
+    printf("\nf2: maxdelta=%lf\n", max_delta);
+    printf("%d %d\n", 0, w*h*4);
+    for (int k = 0; k < h * w * 4; k += 4)
+    {
+
     }
 }
 
@@ -201,7 +213,7 @@ int main() {
             make_set(i, parent, rank);
             count[i] = 0;
         }
-        f(4, h, w, n, 10, parent, rank, picture, get_delta_rgb); ///_________________________________1.5
+        f(3, h, w, n, 10, parent, rank, picture, get_delta_rgb); ///_________________________________1.5
         for (int k = 0; k < h * w; k += 1)
         {
             int x = 0;
@@ -217,7 +229,7 @@ int main() {
         }
         int ih = 0;
         int jw = 0;
-        int x2 = 1;
+        int x2 = 2;
         for (int k = 0; k < h * w; k += 1)
         {
             if (picture[4*k] > 200)
@@ -241,31 +253,31 @@ int main() {
             }
         }
 
-//        ih = 0;
-//        jw = 0;
-//        int x3 = 3;
-//        for (int k = 0; k < h * w; k += 1)
-//        {
-//            if (picture3[4*k] > 200)
-//            {
-//                for (int i = ih-x3; i < ih+x3; i++)
-//                {
-//                    for (int j = jw-x3; j < jw+x3; j++)
-//                    {
-//                        if (i < 0 || i >= h || j < 0 || j >= w) continue;
-//                        for (int ii = 0; ii < 3; ii++)
-//                            picture2[4*(i*w+j)+ii] = '0';
-//                    }
-//                }
-//            }
-//
-//            jw++;
-//            if (jw == w)
-//            {
-//                jw = 0;
-//                ih++;
-//            }
-//        }
+        ih = 0;
+        jw = 0;
+        int x3 = 1;
+        for (int k = 0; k < h * w; k += 1)
+        {
+            if (picture3[4*k] > 200)
+            {
+                for (int i = ih-x3; i < ih+x3; i++)
+                {
+                    for (int j = jw-x3; j < jw+x3; j++)
+                    {
+                        if (i < 0 || i >= h || j < 0 || j >= w) continue;
+                        for (int ii = 0; ii < 3; ii++)
+                            picture2[4*(i*w+j)+ii] = 255;
+                    }
+                }
+            }
+
+            jw++;
+            if (jw == w)
+            {
+                jw = 0;
+                ih++;
+            }
+        }
 
         //applySobelFilter(picture2, w, h);
 
@@ -283,7 +295,7 @@ int main() {
 //            make_set(i, parent, rank);
 //            count[i] = 0;
 //        }
-//        f(5, h, w, n, x, parent, rank, picture2, get_delta_bw); ///_________________________________2
+//        f(10, h, w, n, 6, parent, rank, picture2, get_delta_bw); ///_________________________________2
 //        for (int k = 0; k < h * w; k += 1)
 //        {
 //            if (parent[k] == k)
@@ -334,7 +346,7 @@ int main() {
         free(count);
     }
 
-	save_png_file(filename_output, picture3, w, h);
+	save_png_file(filename_output, picture2, w, h);
 	free(picture);
 	free(picture2);
 	free(picture3);
