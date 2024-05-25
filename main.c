@@ -124,12 +124,12 @@ int main() {
 
 	unsigned int w = 0, h = 0;
 
-	char *filename_input = "images/hand.png";
+	char *filename_input = "images/skull.png";
 	unsigned char *picture = load_png_file(filename_input, &w, &h);
 	unsigned char *picture2 = load_png_file(filename_input, &w, &h);
 	unsigned char *picture3 = load_png_file(filename_input, &w, &h);
 
-	char *filename_output = "images/hand_out8.png";
+	char *filename_output = "images/skull_out9.png";
 
 	if (picture == NULL) {
 		printf("I can't read the picture %s. Error.\n", filename_input);
@@ -149,6 +149,7 @@ int main() {
 		for (int j = 0; j < 3; j++)
         {
             //picture[i+j] = x;
+            picture3[i+j] = 0;
             x++;
         }
 	}
@@ -211,20 +212,15 @@ int main() {
         int x2 = 3;
         for (int k = 0; k < h * w; k += 1)
         {
-            for (int i = ih-x2; i < ih+x2; i++)
+            if (picture[4*k] > 200)
             {
-                for (int j = jw-x2; j < jw+x2; j++)
+                for (int i = ih-x2; i < ih+x2; i++)
                 {
-                    if (i < 0 || i >= h || j < 0 || j >= w) continue;
-                    if (picture[4*k] > 250)
+                    for (int j = jw-x2; j < jw+x2; j++)
                     {
+                        if (i < 0 || i >= h || j < 0 || j >= w) continue;
                         for (int ii = 0; ii < 3; ii++)
                             picture3[(i*w+j)*4+ii] = picture[k*4+ii];
-                    }
-                    else
-                    {
-                        for (int ii = 0; ii < 3; ii++)
-                            picture3[(i*w+j)*4+ii] = picture[(i*w+j)*4+ii];
                     }
                 }
             }
@@ -236,14 +232,30 @@ int main() {
                 ih++;
             }
         }
+
+        ih = 0;
+        jw = 0;
+        int x3 = 3;
         for (int k = 0; k < h * w; k += 1)
         {
             if (picture3[4*k] > 200)
             {
-                for (int i = 0; i < 3; i++)
+                for (int i = ih-x3; i < ih+x3; i++)
                 {
-                    picture2[4*k+i] = picture3[4*k];
+                    for (int j = jw-x3; j < jw+x3; j++)
+                    {
+                        if (i < 0 || i >= h || j < 0 || j >= w) continue;
+                        for (int ii = 0; ii < 3; ii++)
+                            picture2[4*(i*w+j)+ii] = 0;
+                    }
                 }
+            }
+
+            jw++;
+            if (jw == w)
+            {
+                jw = 0;
+                ih++;
             }
         }
 
@@ -254,7 +266,7 @@ int main() {
 //            make_set(i, parent, rank);
 //            count[i] = 0;
 //        }
-//        f(3, h, w, n, x, parent, rank, picture2, get_delta_rgb); ///_________________________________2
+//        f(2, h, w, n, 10, parent, rank, picture2, get_delta_bw); ///_________________________________2
 //        for (int k = 0; k < h * w; k += 1)
 //        {
 //            if (parent[k] == k)
@@ -272,7 +284,7 @@ int main() {
 //                }
 //            }
 //        }
-////--------------------------------------------------------------------
+//--------------------------------------------------------------------
 //        for (int k = 0; k < h * w; k += 1)
 //        {
 //            count[parent[k]]++;
