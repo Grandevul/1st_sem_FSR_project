@@ -81,6 +81,11 @@ double get_delta_bw(int k, int g, unsigned char *p)
     return abs(p[k+1]-p[g+1]);
 }
 
+double get_delta_bw3(int k, int g, unsigned char *p)
+{
+    return abs(p[k]-p[g]);
+}
+
 double get_delta_bw2(int k, int g, unsigned char *p)
 {
     if (p[g]+240 < p[k]) return 0;
@@ -101,9 +106,11 @@ void f(double max_delta, int h, int w, int n, int x, int* parent, int* rank, uns
             for (int j = jw-x; j < jw+x; j++)
             {
                 if (i < 0 || i >= h || j < 0 || j >= w) continue;
+                //double delta = get_delta(find_set(k/4, parent, rank)*4, (i*w+j)*4, picture);
                 double delta = get_delta(k, (i*w+j)*4, picture);
                 //delta *= sqrt((i-ih)*(i-ih) + (j-jw)*(j-jw));
                 if (delta <= max_delta) union_sets(k/4, w*i+j, parent, rank);
+                //if (k%100000 == 0) printf("%lf ", delta);
             }
         }
 
@@ -128,8 +135,9 @@ int main() {
 	unsigned char *picture = load_png_file(filename_input, &w, &h);
 	unsigned char *picture2 = load_png_file(filename_input, &w, &h);
 	unsigned char *picture3 = load_png_file(filename_input, &w, &h);
+	unsigned char *picture4 = load_png_file(filename_input, &w, &h);
 
-	char *filename_output = "images/skull_out10.png";
+	char *filename_output = "images/skull_out11.png";
 
 	if (picture == NULL) {
 		printf("I can't read the picture %s. Error.\n", filename_input);
@@ -146,7 +154,7 @@ int main() {
 		P.alpha = picture[i+3];
 
 		char x = (P.R + P.G + P.B) / 3;
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j < 4; j++)
         {
             //picture[i+j] = x;
             picture3[i+j] = 0;
@@ -219,7 +227,7 @@ int main() {
                     for (int j = jw-x2; j < jw+x2; j++)
                     {
                         if (i < 0 || i >= h || j < 0 || j >= w) continue;
-                        for (int ii = 0; ii < 3; ii++)
+                        for (int ii = 0; ii < 4; ii++)
                             picture3[(i*w+j)*4+ii] = picture[k*4+ii];
                     }
                 }
@@ -233,40 +241,49 @@ int main() {
             }
         }
 
-        ih = 0;
-        jw = 0;
-        int x3 = 3;
-        for (int k = 0; k < h * w; k += 1)
-        {
-            if (picture3[4*k] > 200)
-            {
-                for (int i = ih-x3; i < ih+x3; i++)
-                {
-                    for (int j = jw-x3; j < jw+x3; j++)
-                    {
-                        if (i < 0 || i >= h || j < 0 || j >= w) continue;
-                        for (int ii = 0; ii < 3; ii++)
-                            picture2[4*(i*w+j)+ii] = '0';
-                    }
-                }
-            }
-
-            jw++;
-            if (jw == w)
-            {
-                jw = 0;
-                ih++;
-            }
-        }
+//        ih = 0;
+//        jw = 0;
+//        int x3 = 3;
+//        for (int k = 0; k < h * w; k += 1)
+//        {
+//            if (picture3[4*k] > 200)
+//            {
+//                for (int i = ih-x3; i < ih+x3; i++)
+//                {
+//                    for (int j = jw-x3; j < jw+x3; j++)
+//                    {
+//                        if (i < 0 || i >= h || j < 0 || j >= w) continue;
+//                        for (int ii = 0; ii < 3; ii++)
+//                            picture2[4*(i*w+j)+ii] = '0';
+//                    }
+//                }
+//            }
+//
+//            jw++;
+//            if (jw == w)
+//            {
+//                jw = 0;
+//                ih++;
+//            }
+//        }
 
         //applySobelFilter(picture2, w, h);
+
+//        for (int i = 0; i < h * w * 4; i += 4)
+//        {
+//            char x = picture2[i+0] + picture2[i+1] + picture[i+2];
+//            x /= 3;
+//            picture2[i+0] = x;
+//            picture2[i+1] = x;
+//            picture2[i+2] = x;
+//        }
 ///--------
 //        for (int i = 0; i < n; i++)
 //        {
 //            make_set(i, parent, rank);
 //            count[i] = 0;
 //        }
-//        f(2, h, w, n, 4, parent, rank, picture2, get_delta_bw); ///_________________________________2
+//        f(5, h, w, n, x, parent, rank, picture2, get_delta_bw); ///_________________________________2
 //        for (int k = 0; k < h * w; k += 1)
 //        {
 //            if (parent[k] == k)
@@ -317,10 +334,11 @@ int main() {
         free(count);
     }
 
-	save_png_file(filename_output, picture2, w, h);
+	save_png_file(filename_output, picture3, w, h);
 	free(picture);
 	free(picture2);
 	free(picture3);
+	free(picture4);
 
 	return 0;
 }
