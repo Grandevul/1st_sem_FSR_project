@@ -1,21 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-
-typedef struct lst
-{
-    int x;
-    struct lst* next;
-    struct lst* prev;
-
-}lst;
-
-typedef struct deque
-{
-    int length;
-    lst* first;
-    lst* last;
-}deque;
+#include "deque.h"
 
 void push_back(int n, deque *a)
 {

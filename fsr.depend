@@ -13,18 +13,20 @@
 	<iostream>
 	"lodepng.h"
 
-1716479011 source:d:\informatica\fsr_prak\1st_sem_fsr_project\image.c
+1716644996 source:d:\informatica\fsr_prak\1st_sem_fsr_project\image.c
 	"lodepng.h"
+	"image.h"
 	<math.h>
 	<stdio.h>
 	<stdlib.h>
 
-1716587216 source:d:\informatica\fsr_prak\1st_sem_fsr_project\main.c
+1716719858 source:d:\informatica\fsr_prak\1st_sem_fsr_project\main.c
 	<math.h>
 	<stdio.h>
 	<stdlib.h>
 	"lodepng.h"
 	"image.h"
+	"deque.h"
 
 1716477931 d:\informatica\fsr_prak\1st_sem_fsr_project\image.c
 	"lodepng.h"
@@ -33,4 +35,12 @@
 	<stdlib.h>
 
 1716479023 d:\informatica\fsr_prak\1st_sem_fsr_project\image.h
+
+1716645007 source:d:\informatica\fsr_prak\1st_sem_fsr_project\deque.c
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	"deque.h"
+
+1716645084 d:\informatica\fsr_prak\1st_sem_fsr_project\deque.h
 

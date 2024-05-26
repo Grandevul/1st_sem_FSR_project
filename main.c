@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "lodepng.h"
 #include "image.h"
+#include "deque.h"
 
 void applySobelFilter (unsigned char *image, int width, int height) {
     int gx[3][3] = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
@@ -127,15 +128,80 @@ void f(double max_delta, int h, int w, int n, int x, int* parent, int* rank, uns
     }
 }
 
-void f2(double max_delta, int h, int w, int n, int x, int* prev, unsigned char *picture,
+void bfs(int x, int d, int a, int b, double max_delta, int h, int w, int* parent, int* was, unsigned char *picture,
+         double (*get_delta)(int, int, unsigned char*))
+{
+    deque q;
+    q.length = 0;
+    q.first = NULL;
+    q.last = NULL;
+    push_back(x, &q);
+    int k = 0;
+    int xii = x%w;
+    int ss = 1e8;
+//    int war = 1;
+//    printf("st__ ");
+    while (!empty(&q) && size(&q) < ss)
+    {
+        int y = front(&q)->x;
+        pop_front(&q);
+        if (was[y] > 2-b) continue;
+        was[y]++;
+        int i = y/w;
+        int j = y%w;
+
+        int d1=0, d2 = d, d3 = 0, d4 = d;
+        if (b < 0) {d3 = -d; d4 = 0;}
+        if (a < 0) {d1 = -d; d2 = 0;}
+
+        for (int ii = i+d1; ii < i+d2; ii += 1)
+        {
+            for (int jj = j+d3; jj < j+d4; jj += 1)
+            {
+//                int kk = 1e7;
+//                if (k % kk == 0) printf("%d: %d, %d || ", k, ii, jj);
+//                if (k > kk) return;
+                if (ii >= 0 && ii < h && jj >= 0 && jj < w)
+                {
+                    double delta = get_delta(x*4, (ii*w+jj)*4, picture);
+                    if(delta <= max_delta && (parent[ii*w+jj] == ii*w+jj || (ii == xii && parent[ii*w+jj] == x)))
+                    {
+//                        if (ii*w+jj == x) war = 0;
+//                        if (k > kk) printf("%d: %d, %d ", k, ii, jj);
+                        parent[ii*w+jj] = x;
+                        push_back(ii*w+jj, &q);
+                    }
+                }
+//                if (k > kk) printf("ok\n");
+            }
+        }
+        k++;
+    }
+//    printf("st222__ ");
+}
+
+void f2(double max_delta, int h, int w, int x, int* parent, int* was, unsigned char *picture,
         double (*get_delta)(int, int, unsigned char*))
 {
 
     printf("\nf2: maxdelta=%lf\n", max_delta);
     printf("%d %d\n", 0, w*h*4);
-    for (int k = 0; k < h * w * 4; k += 4)
+//    int k = 406296;
+//    bfs(k, x, 1, 1, max_delta, h, w, parent, was, picture, get_delta);
+//    bfs(k, x, 1, -1, max_delta, h, w, parent, was, picture, get_delta);
+    int cnt = 0;
+    for (int k = 0; k < h * w; k += 1)
     {
+        if (parent[k] == k)
+        {
+            bfs(k, x, 1, 1, max_delta, h, w, parent, was, picture, get_delta);
+            bfs(k, x, 1, -1, max_delta, h, w, parent, was, picture, get_delta);
 
+            bfs(k, x, -1, 1, max_delta, h, w, parent, was, picture, get_delta);
+            bfs(k, x, -1, -1, max_delta, h, w, parent, was, picture, get_delta);
+
+            cnt++;
+        }
     }
 }
 
@@ -143,13 +209,13 @@ int main() {
 
 	unsigned int w = 0, h = 0;
 
-	char *filename_input = "images/skull.png";
+	char *filename_input = "images/hand.png";
 	unsigned char *picture = load_png_file(filename_input, &w, &h);
 	unsigned char *picture2 = load_png_file(filename_input, &w, &h);
 	unsigned char *picture3 = load_png_file(filename_input, &w, &h);
 	unsigned char *picture4 = load_png_file(filename_input, &w, &h);
 
-	char *filename_output = "images/skull_out11.png";
+	char *filename_output = "images/hand_out13.png";
 
 	if (picture == NULL) {
 		printf("I can't read the picture %s. Error.\n", filename_input);
@@ -181,6 +247,8 @@ int main() {
         int x = 3;
         int n = h * w;
         printf("n=%d\n", n);
+        printf("h=%d\n", h);
+        printf("w=%d\n", w);
         int* parent = (int*) malloc(sizeof(int)*n);
         int* rank = (int*) malloc(sizeof(int)*n);
         int* count = (int*) malloc(sizeof(int)*n);
@@ -283,60 +351,60 @@ int main() {
 
 //        for (int i = 0; i < h * w * 4; i += 4)
 //        {
-//            char x = picture2[i+0] + picture2[i+1] + picture[i+2];
+//            char x = picture4[i+0] + picture4[i+1] + picture[i+2];
 //            x /= 3;
-//            picture2[i+0] = x;
-//            picture2[i+1] = x;
-//            picture2[i+2] = x;
+//            picture4[i+0] = x;
+//            picture4[i+1] = x;
+//            picture4[i+2] = x;
 //        }
 ///--------
-//        for (int i = 0; i < n; i++)
-//        {
-//            make_set(i, parent, rank);
-//            count[i] = 0;
-//        }
-//        f(10, h, w, n, 6, parent, rank, picture2, get_delta_bw); ///_________________________________2
-//        for (int k = 0; k < h * w; k += 1)
-//        {
-//            if (parent[k] == k)
-//            {
-//                for (int i = 0; i < 3; i++)
-//                {
-//                    picture2[4*k+i] = rand()%256;
-//                }
-//            }
-//            else
-//            {
-//                for (int i = 0; i < 3; i++)
-//                {
-//                    picture2[4*k+i] = picture2[4*parent[k]+i];
-//                }
-//            }
-//        }
+        for (int i = 0; i < n; i++)
+        {
+            make_set(i, parent, rank);
+            count[i] = 0;
+        }
+        f2(48, h, w, 5, parent, rank, picture2, get_delta_bw); ///_________________________________2
+        for (int k = 0; k < h * w; k += 1)
+        {
+            if (parent[k] == k)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    picture2[4*k+i] = (rand()+140)%256;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    picture2[4*k+i] = picture2[4*parent[k]+i];
+                }
+            }
+        }
 //--------------------------------------------------------------------
-//        for (int k = 0; k < h * w; k += 1)
-//        {
-//            count[parent[k]]++;
-//        }
-//        for (int k = 0; k < h * w; k += 1)
-//        {
-////            if (count[parent[k]] > 10)
-////                printf("%d\n", count[parent[k]]);
-//            if (count[parent[k]] > 100000)
-//            {
-//                for (int i = 0; i < 3; i++)
-//                {
-//                    picture2[4*k+i] = 0;
-//                }
-//            }
-//            if (count[parent[k]] < 10)
-//            {
-//                for (int i = 0; i < 3; i++)
-//                {
-//                    picture2[4*k+i] = 0;
-//                }
-//            }
-//        }
+        for (int k = 0; k < h * w; k += 1)
+        {
+            count[parent[k]]++;
+        }
+        for (int k = 0; k < h * w; k += 1)
+        {
+//            if (count[parent[k]] > 10)
+//                printf("%d\n", count[parent[k]]);
+            if (count[parent[k]] > 300000)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    picture2[4*k+i] = 0;
+                }
+            }
+            if (count[parent[k]] < 1000)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    picture2[4*k+i] = 0;
+                }
+            }
+        }
 
 //
 //        applySobelFilter(picture, w, h);
