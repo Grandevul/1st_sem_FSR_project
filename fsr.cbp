@@ -32,6 +32,21 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="deque.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="deque.h" />
+		<Unit filename="image.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="image.h" />
+		<Unit filename="lodepng.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="lodepng.h" />
+		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
